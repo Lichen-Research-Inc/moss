@@ -40,9 +40,8 @@ to 77.7% on temporal question categories.
 
 ### `moss.rrf` — Multi-Channel Reciprocal Rank Fusion
 
-Combines BM25 lexical search, dense vector search, graph traversal, and
-cross-encoder reranking into a single ranked list using Reciprocal Rank Fusion
-(Cormack et al. 2009).
+Combines BM25 lexical search, dense vector search, and graph traversal
+into a single ranked list using Reciprocal Rank Fusion (Cormack et al. 2009).
 
 RRF formula: `score(d) = Σ w_s * (1 / (k + rank_s(d)))` where k=60.
 

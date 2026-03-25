@@ -62,16 +62,10 @@ class RRFConfig:
     fts_weight: float = 1.0            # Full-text search
     vector_weight: float = 1.0         # Semantic similarity
     graph_weight: float = 0.8          # Graph traversal (exploratory, lower weight)
-    reranker_weight: float = 1.5       # Cross-encoder reranker (most accurate)
-
     # Retrieval limits per source
     fts_limit: int = 50
     vector_limit: int = 50
     graph_limit: int = 30
-
-    # Reranking
-    enable_reranker: bool = False
-    reranker_top_k: int = 20
 
     # Diversity (Maximal Marginal Relevance)
     enable_mmr: bool = False
@@ -156,9 +150,6 @@ class RRFSearchEngine:
 
         fused_results = self._apply_rrf(valid_results)
 
-        if self.config.enable_reranker and fused_results:
-            fused_results = await self._rerank(query, fused_results)
-
         if self.config.enable_mmr and len(fused_results) > max_results:
             fused_results = self._apply_mmr(fused_results, max_results)
 
@@ -240,7 +231,6 @@ class RRFSearchEngine:
             "fts": self.config.fts_weight,
             "vector": self.config.vector_weight,
             "graph": self.config.graph_weight,
-            "reranker": self.config.reranker_weight,
         }
 
         doc_scores: Dict[str, float] = {}
@@ -270,48 +260,6 @@ class RRFSearchEngine:
             ranked.append(result)
 
         return ranked
-
-    async def _rerank(
-        self,
-        query: str,
-        candidates: List[SearchResult]
-    ) -> List[SearchResult]:
-        """Optional cross-encoder reranking step."""
-        top_candidates = candidates[:self.config.reranker_top_k]
-        try:
-            from moss.rrf.cross_encoder_reranker import CrossEncoderReranker
-            reranker = CrossEncoderReranker()
-            cand_dicts = [
-                {
-                    "doc_id": c.doc_id,
-                    "title": c.title,
-                    "summary": c.summary,
-                    "path": c.path,
-                    "rrf_score": c.rrf_score,
-                }
-                for c in top_candidates
-            ]
-            reranked = await reranker.rerank(query, cand_dicts, top_k=len(top_candidates))
-            id_to_result = {c.doc_id: c for c in top_candidates}
-            result_list = []
-            for r in reranked:
-                gid = r.get("doc_id", "")
-                if gid in id_to_result:
-                    orig = id_to_result[gid]
-                    orig.rrf_score = (orig.rrf_score + r.get("rerank_score", 0) / 10.0) / 2
-                    orig.source = "reranker"
-                    result_list.append(orig)
-            reranked_ids = {r.get("doc_id") for r in reranked}
-            for c in candidates:
-                if c.doc_id not in reranked_ids:
-                    result_list.append(c)
-            return result_list
-        except ImportError:
-            logger.warning("Cross-encoder reranker not available")
-            return candidates
-        except Exception as e:
-            logger.warning(f"Reranking failed: {e}")
-            return candidates
 
     def _apply_mmr(
         self,
