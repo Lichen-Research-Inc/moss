@@ -78,11 +78,13 @@
       "model": "Qwen-35B-class MoE (local)",
       "judge": "gpt-4o-2024-11-20, partial-credit, BCa bootstrap CIs",
       "config": {
-        "recall_limit": 25,
-        "hybrid": true,
-        "session_context": true,
-        "spreading_activation": true,
-        "hebbian_pathways": true
+        "retrieval": "hybrid (BM25 + vector RRF)",
+        "answerer_routing": {
+          "multi_hop": "local 35B-class MoE (42% of questions)",
+          "single_hop_adversarial": "local 14B dense (37%)",
+          "temporal_common_sense": "frontier API model (21%)"
+        },
+        "note": "per config-as-executed; an earlier version of this entry over-claimed session_context and spreading_activation \u2014 corrected 2026-06-10"
       },
       "results": {
         "overall_n_weighted": 81.65,
@@ -95,12 +97,7 @@
         "n": 1986,
         "cross_conversation_sigma_pp": 2.71
       },
-      "ablation": {
-        "hebbian_off_matched_ring": 79.61,
-        "hebbian_delta_pp": 2.04,
-        "matched_ring_date": "2026-04-26"
-      },
-      "note": "Current headline ring. N-weighted across all 10 conversations."
+      "note": "Current headline ring. N-weighted across all 10 conversations. Judge: gpt-4o-2024-11-20, partial-credit."
     }
   ],
   "analysis": {

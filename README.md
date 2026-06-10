@@ -139,8 +139,10 @@ We report both **with** and **without** adversarial categories. Most published s
 ### Cambium ring, 2026-04-25 (current)
 
 Full 10-conversation ring, N-weighted, GPT-4o judge (`gpt-4o-2024-11-20`), partial-credit
-scoring with BCa bootstrap confidence intervals per conversation. Local 35B-class MoE
-answerer, hybrid retrieval, session context, spreading activation.
+scoring with BCa bootstrap confidence intervals per conversation. Routed multi-model answerer — local 35B-class MoE (multi-hop, 42% of questions),
+local 14B dense (single-hop + adversarial, 37%), frontier API model (temporal +
+common-sense, 21%) — with hybrid retrieval. Full per-category routing recorded in
+`benchmarks/locomo_results.json`.
 
 | Category | Score | N |
 |----------|-------|---|
@@ -154,9 +156,6 @@ answerer, hybrid retrieval, session context, spreading activation.
 
 Cross-conversation σ = 2.71pp.
 
-**Hebbian ablation (matched rings):** an identical ring with the Hebbian pathway layer
-disabled scores **79.61%** — the pathways are worth **+2.04pp** on the same 1,986
-questions, same pipeline, same model (rings of 2026-04-25 vs 2026-04-26).
 
 ### Historical: V12 (2026-03)
 
