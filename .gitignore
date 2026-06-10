@@ -6,3 +6,8 @@ __pycache__/
 dist/
 build/
 .env
+
+# Vigil publish-gate ruling 2026-06-10: never commit pre-κ (judge-calibration embargo)
+benchmarks/locomo_judge_confound_analysis.json
+benchmarks/locomo_opus47_pilot_results.json
+benchmarks/locomo_r023_results.json
