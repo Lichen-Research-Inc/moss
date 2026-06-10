@@ -22,7 +22,7 @@
         "single-hop": 0.596,
         "multi-hop": 0.743,
         "temporal": 0.676,
-        "adversarial": 0.950,
+        "adversarial": 0.95,
         "common-sense": 0.885
       }
     },
@@ -47,7 +47,7 @@
         "adversarial": 0.966,
         "common-sense": 0.328
       },
-      "notes": "Reduced recall_limit (10 vs 25) and disabled hybrid/session-context explain part of V12→V25a regression."
+      "notes": "Reduced recall_limit (10 vs 25) and disabled hybrid/session-context explain part of V12\u2192V25a regression."
     },
     {
       "version": "V25b",
@@ -64,20 +64,56 @@
       "overall": 0.613,
       "overall_excl_adversarial": 0.502,
       "categories": {
-        "single-hop": 0.450,
+        "single-hop": 0.45,
         "multi-hop": 0.496,
-        "temporal": 0.520,
+        "temporal": 0.52,
         "adversarial": 0.998,
         "common-sense": 0.646
       },
       "notes": "Same retrieval pipeline as V25a, different answering model. Delta isolates LLM vs retrieval contribution."
+    },
+    {
+      "version": "cambium-2026-04",
+      "date": "2026-04-25",
+      "model": "Qwen-35B-class MoE (local)",
+      "judge": "gpt-4o-2024-11-20, partial-credit, BCa bootstrap CIs",
+      "config": {
+        "recall_limit": 25,
+        "hybrid": true,
+        "session_context": true,
+        "spreading_activation": true,
+        "hebbian_pathways": true
+      },
+      "results": {
+        "overall_n_weighted": 81.65,
+        "overall_excl_adversarial": 77.37,
+        "single_hop": 56.74,
+        "multi_hop": 81.57,
+        "temporal": 86.76,
+        "adversarial": 96.41,
+        "common_sense": 69.79,
+        "n": 1986,
+        "cross_conversation_sigma_pp": 2.71
+      },
+      "ablation": {
+        "hebbian_off_matched_ring": 79.61,
+        "hebbian_delta_pp": 2.04,
+        "matched_ring_date": "2026-04-26"
+      },
+      "note": "Current headline ring. N-weighted across all 10 conversations."
     }
   ],
   "analysis": {
     "v25_dual_model_findings": {
       "description": "V25a and V25b share identical retrieval but different answering models, isolating the bottleneck per category.",
-      "retrieval_bound": ["single-hop (+0.4pp)", "multi-hop (-2.1pp)"],
-      "llm_bound": ["temporal (+29.0pp)", "common-sense (+31.8pp)"],
+      "retrieval_bound": [
+        "single-hop (+0.4pp)",
+        "multi-hop (-2.1pp)"
+      ],
+      "llm_bound": [
+        "temporal (+29.0pp)",
+        "common-sense (+31.8pp)"
+      ],
       "conclusion": "Single-hop and multi-hop scores are retrieval-limited. Temporal and common-sense are LLM-limited."
     }
   }

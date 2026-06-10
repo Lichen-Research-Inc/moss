@@ -134,9 +134,31 @@ for r in fused:
 
 Evaluated on the [LoCoMo](https://github.com/snap-research/locomo) long-term conversation memory benchmark (10 conversations, 1,986 questions, GPT-4o judge).
 
-We report both **with** and **without** adversarial categories. Most published systems exclude adversarial (Category 5) following the LoCoMo evaluation protocol. We include it because hallucination resistance is a core feature of neuroplastic memory.
+We report both **with** and **without** adversarial categories. Most published systems exclude adversarial (Category 5) following the LoCoMo evaluation protocol. We include it because hallucination resistance is a core feature of neuroplastic memory (see the adversarial row in the current ring: 96.41%, n=446).
 
-### V12 (best overall)
+### Cambium ring, 2026-04-25 (current)
+
+Full 10-conversation ring, N-weighted, GPT-4o judge (`gpt-4o-2024-11-20`), partial-credit
+scoring with BCa bootstrap confidence intervals per conversation. Local 35B-class MoE
+answerer, hybrid retrieval, session context, spreading activation.
+
+| Category | Score | N |
+|----------|-------|---|
+| **Overall (N-weighted)** | **81.65%** | 1,986 |
+| **Overall (excl. adversarial)** | **77.37%** | 1,540 |
+| Single-hop | 56.74% | 282 |
+| Multi-hop | 81.57% | 841 |
+| Temporal | 86.76% | 321 |
+| Adversarial | 96.41% | 446 |
+| Common-sense | 69.79% | 96 |
+
+Cross-conversation σ = 2.71pp.
+
+**Hebbian ablation (matched rings):** an identical ring with the Hebbian pathway layer
+disabled scores **79.61%** — the pathways are worth **+2.04pp** on the same 1,986
+questions, same pipeline, same model (rings of 2026-04-25 vs 2026-04-26).
+
+### Historical: V12 (2026-03)
 
 | Category | Score |
 |----------|-------|
